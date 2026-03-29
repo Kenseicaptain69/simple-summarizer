@@ -1,0 +1,64 @@
+import React from 'react'
+import { motion } from 'framer-motion'
+import GlassCard from '../ui/GlassCard'
+
+const WordTable = ({ data }) => {
+  const maxCount = Math.max(...data.top_keywords.map((k) => k.count), 1)
+
+  return (
+    <GlassCard>
+      <h3 className="text-lg font-bold mb-2 text-text-primary">Word Frequency Analysis</h3>
+      <p className="text-sm text-text-muted mb-6">Top content words by occurrence</p>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-white/10">
+              <th className="text-left py-3 px-4 text-text-muted font-medium">Rank</th>
+              <th className="text-left py-3 px-4 text-text-muted font-medium">Word</th>
+              <th className="text-left py-3 px-4 text-text-muted font-medium">Count</th>
+              <th className="text-left py-3 px-4 text-text-muted font-medium">Frequency</th>
+              <th className="text-left py-3 px-4 text-text-muted font-medium">Distribution</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.top_keywords.slice(0, 15).map((item, idx) => {
+              const percentage = (item.count / maxCount) * 100
+              return (
+                <motion.tr
+                  key={idx}
+                  className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
+                    idx % 2 === 0 ? 'bg-white/2' : ''
+                  }`}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                >
+                  <td className="py-3 px-4 font-mono text-text-hint">{idx + 1}</td>
+                  <td className="py-3 px-4 text-text-primary font-medium">{item.word}</td>
+                  <td className="py-3 px-4 font-mono text-accent-400">{item.count}</td>
+                  <td className="py-3 px-4 text-text-muted">{((item.count / data.word_count) * 100).toFixed(2)}%</td>
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 h-2 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-primary-400 to-accent-400"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${percentage}%` }}
+                          transition={{ duration: 0.8, delay: idx * 0.05 }}
+                        />
+                      </div>
+                      <span className="text-xs text-text-hint w-8">{Math.round(percentage)}%</span>
+                    </div>
+                  </td>
+                </motion.tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </GlassCard>
+  )
+}
+
+export default WordTable
