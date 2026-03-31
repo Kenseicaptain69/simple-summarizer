@@ -11,7 +11,9 @@ from fastapi.exceptions import HTTPException
 from core.database import init_db
 from core.config import CORS_ORIGINS
 from routers import auth, analyze, chat, history
-
+import os
+port = int(os.getenv("PORT", 8000))
+# When running uvicorn, use: uvicorn main:app --host 0.0.0.0 --port $PORT
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -111,3 +113,6 @@ async def health_check():
 @app.get("/")
 async def root():
     return {"message": "Glimpse API is running. Visit /docs for the API reference."}
+
+
+
